@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background:        0 0% 100%;
+    --foreground:        222 47% 11%;
+    --card:              0 0% 100%;
+    --card-foreground:   222 47% 11%;
+    --muted:             210 20% 96%;
+    --muted-foreground:  215 16% 47%;
+    --border:            214 32% 91%;
+    --input:             214 32% 91%;
+    --ring:              221 83% 53%;
+    --primary:           221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary:         210 20% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --destructive:       0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --radius:            0.75rem;
+  }
+
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Heebo', system-ui, sans-serif;
+    margin: 0;
+  }
+
+  #root {
+    min-height: 100svh;
+  }
+}

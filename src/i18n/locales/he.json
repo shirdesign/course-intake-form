@@ -1,0 +1,297 @@
+{
+  "intake": {
+    "pageTitle": "שאלון אפיון פרויקט",
+    "pageSubtitle": "עוזר לנו להבין את הפרויקט שלכם ולתת הצעה מדויקת",
+    "next": "הבא",
+    "back": "חזרה",
+    "submit": "שלחו את השאלון",
+    "submitting": "שולח...",
+    "successTitle": "השאלון נשלח בהצלחה!",
+    "successDesc": "תודה! קיבלנו את הפרטים וניצור איתך קשר בהקדם.",
+    "successBack": "חזרה לדף הבית",
+    "errorGeneral": "שגיאה בשליחה — אנא נסה שוב.",
+    "errorMissingUrl": "כתובת ה-Apps Script לא מוגדרת (VITE_INTAKE_SCRIPT_URL). פנו למפתח.",
+    "required": "שדה חובה",
+    "optional": "(אופציונלי)",
+    "other": "אחר",
+    "otherPlaceholder": "פרטו...",
+    "yes": "כן",
+    "no": "לא",
+    "steps": {
+      "general": "כללי",
+      "branding": "מיתוג",
+      "gameType": "משחק",
+      "content": "תוכן",
+      "features": "פיצ'רים",
+      "technical": "טכני",
+      "modifications": "שינויים",
+      "deliverables": "תוצרים",
+      "contact": "קשר"
+    },
+    "general": {
+      "title": "פרטי הפרויקט",
+      "subtitle": "ספרו לנו על האירוע או הפרויקט",
+      "projectName": "שם הפרויקט / שם האירוע",
+      "projectNamePlaceholder": "לדוגמה: חידון בר המצווה של יותם",
+      "eventType": "סוג האירוע",
+      "eventTypes": {
+        "bar_bat_mitzvah": "בר / בת מצווה",
+        "online_course": "קורס אונליין",
+        "corporate": "אירוע תאגידי / עסקי",
+        "wedding": "חתונה",
+        "birthday": "יום הולדת",
+        "school": "בית ספר / חינוכי",
+        "other": "אחר"
+      },
+      "targetAgeRange": "טווח גיל קהל היעד",
+      "targetAgeRangePlaceholder": "לדוגמה: 8–80",
+      "techLevel": "רמת הטכנולוגיה של הקהל",
+      "techLevels": {
+        "high": "גבוהה — נוחים עם אפליקציות",
+        "medium": "בינונית — שימוש בסיסי בסמארטפון",
+        "low": "נמוכה — מינימום טכנולוגיה"
+      },
+      "participantsCount": "מספר משתתפים משוער",
+      "participantsCountPlaceholder": "לדוגמה: 50",
+      "eventDate": "תאריך האירוע",
+      "deadline": "מועד אחרון לקבלת המשחק",
+      "budget": "תקציב משוער",
+      "budgets": {
+        "under_2000": "עד 2,000 ₪",
+        "2000_5000": "2,000 – 5,000 ₪",
+        "5000_10000": "5,000 – 10,000 ₪",
+        "above_10000": "מעל 10,000 ₪",
+        "tbd": "עדיין לא החלטנו"
+      }
+    },
+    "branding": {
+      "title": "מיתוג ועיצוב",
+      "subtitle": "נרצה להתאים את המשחק לצבעים ולסגנון שלכם",
+      "hasExistingLogo": "האם יש לכם לוגו קיים?",
+      "primaryColor": "צבע ראשי (שם או HEX)",
+      "primaryColorPlaceholder": "לדוגמה: כחול / #1A73E8",
+      "secondaryColor": "צבע משני",
+      "secondaryColorPlaceholder": "לדוגמה: זהב / #F4B400",
+      "designStyle": "סגנון עיצוב (ניתן לבחור כמה)",
+      "designStyles": {
+        "playful": "שובב וצבעוני",
+        "professional": "מקצועי / עסקי",
+        "minimalist": "מינימליסטי",
+        "elegant": "אלגנטי",
+        "young_dynamic": "צעיר ודינמי",
+        "religious": "דתי / מסורתי"
+      },
+      "inspirationLinks": "קישורים לדוגמאות שאהבתם",
+      "inspirationLinksPlaceholder": "הדביקו קישורים, אחד בכל שורה...",
+      "hasExistingAssets": "האם יש תמונות / גרפיקה מוכנה לשימוש?"
+    },
+    "gameType": {
+      "title": "סוג המשחק ומכניקה",
+      "subtitle": "איך תרצו שהמשחק ירגיש?",
+      "gameTemplate": "תבנית המשחק המועדפת",
+      "gameTemplates": {
+        "trivia": "חידון טריוויה קלאסי",
+        "wheel": "גלגל המזל",
+        "kahoot_style": "סגנון Kahoot — שאלות בזמן אמת",
+        "memory_match": "זיכרון / התאמה",
+        "word_game": "משחק מילים",
+        "timeline": "ציר זמן — ציר חיים",
+        "custom_interactive": "אינטראקטיבי מותאם אישית",
+        "intersection_game": "משחק צמתים / סימולציה",
+        "other": "אחר"
+      },
+      "stagesCount": "מספר שלבים / סיבובים",
+      "stagesCountPlaceholder": "לדוגמה: 5 סיבובים של 10 שאלות",
+      "hasScoringSystem": "האם נדרשת מערכת ניקוד?",
+      "bonusPenalty": "בונוסים / קנסות (אופציונלי)",
+      "bonusPenaltyPlaceholder": "לדוגמה: בונוס ×2 על תשובה מהירה, קנס על שגיאה",
+      "timePerQuestion": "זמן לכל שאלה",
+      "timesPerQuestion": {
+        "no_limit": "ללא הגבלה",
+        "10sec": "10 שניות",
+        "20sec": "20 שניות",
+        "30sec": "30 שניות",
+        "60sec": "דקה",
+        "custom": "מותאם אישית"
+      },
+      "totalQuestions": "כמות שאלות / תוכן כוללת",
+      "totalQuestionsPlaceholder": "לדוגמה: 30 שאלות, 3 קטגוריות",
+      "difficultyProgression": "האם רמת הקושי עולה?"
+    },
+    "content": {
+      "title": "תוכן המשחק",
+      "subtitle": "מה יהיה בפנים?",
+      "questionTypes": "סוגי שאלות (ניתן לבחור כמה)",
+      "questionTypesList": {
+        "multiple_choice": "רב-ברירה (4 אפשרויות)",
+        "true_false": "נכון / לא נכון",
+        "open": "פתוח — תשובה חופשית",
+        "fill_blank": "השלמת משפטים",
+        "image_based": "מבוסס תמונה",
+        "video_based": "מבוסס סרטון",
+        "audio_based": "מבוסס אודיו",
+        "matching": "התאמה (א לב)"
+      },
+      "contentProvider": "מי מספק את התוכן?",
+      "contentProviders": {
+        "client": "אנחנו — הלקוח",
+        "hamaftzchot": "המפצחות",
+        "together": "שיתוף פעולה"
+      },
+      "mainTopic": "נושא ראשי",
+      "mainTopicPlaceholder": "לדוגמה: חייו של יותם, תורת הנהיגה, היסטוריה ישראלית",
+      "subTopics": "תת-נושאים",
+      "subTopicsPlaceholder": "לדוגמה: ילדות, ספורט, משפחה, חברים",
+      "language": "שפת המשחק",
+      "languages": {
+        "hebrew": "עברית",
+        "english": "אנגלית",
+        "bilingual": "דו-לשוני",
+        "other": "אחר"
+      },
+      "needsPersonalization": "האם נדרשת התאמה אישית (שמות, תמונות)?",
+      "personalizationDetails": "פרטי ההתאמה האישית",
+      "personalizationDetailsPlaceholder": "לדוגמה: לכלול תמונות של החוגג, שמות בני המשפחה"
+    },
+    "features": {
+      "title": "פיצ'רים ואינטראקטיביות",
+      "subtitle": "אילו יכולות חשובות לכם?",
+      "mobileSupport": "תאימות למובייל",
+      "mobileSupportOptions": {
+        "required": "חובה — רוב המשתתפים יהיו בטלפון",
+        "optional": "רצוי — יתרון אך לא הכרחי",
+        "not_needed": "לא נדרש — מחשב / מסך גדול בלבד"
+      },
+      "multiplayerType": "מצב משחק",
+      "multiplayerTypes": {
+        "single": "שחקן יחיד",
+        "concurrent": "מקביל — כולם עונים בו-זמנית",
+        "competitive": "תחרותי — לוח תוצאות",
+        "team": "קבוצות / צוותים",
+        "host_led": "מוביל משחק (MC / מארח)"
+      },
+      "leaderboard": "לוח תוצאות",
+      "leaderboardOptions": {
+        "realtime": "בזמן אמת",
+        "end_of_game": "בסוף המשחק",
+        "both": "שניהם",
+        "none": "ללא לוח תוצאות"
+      },
+      "audioFeatures": "תכונות שמע (ניתן לבחור כמה)",
+      "audioFeaturesList": {
+        "sound_effects": "אפקטי קול",
+        "background_music": "מוזיקת רקע",
+        "voice_instructions": "הוראות קוליות",
+        "none": "ללא שמע"
+      },
+      "animationLevel": "רמת אנימציה",
+      "animationLevels": {
+        "none": "ללא אנימציה",
+        "simple": "פשוטה — מעברים בסיסיים",
+        "moderate": "בינונית — ויזואלים נעים",
+        "advanced": "מתקדמת — אפקטים מלאים"
+      },
+      "feedbackType": "משוב על תשובות (ניתן לבחור כמה)",
+      "feedbackTypes": {
+        "visual": "ויזואלי (צבע / אייקון)",
+        "audio": "קולי (צליל נכון / שגוי)",
+        "text": "טקסט הסבר",
+        "none": "ללא משוב"
+      }
+    },
+    "technical": {
+      "title": "דרישות טכניות",
+      "subtitle": "איפה ואיך המשחק יפעל?",
+      "platform": "פלטפורמה",
+      "platforms": {
+        "web": "מבוסס-ווב (קישור בדפדפן)",
+        "mobile_app": "אפליקציה לנייד",
+        "embedded": "מוטמע באתר קיים",
+        "screen_presentation": "מצגת / מסך גדול"
+      },
+      "dataStorage": "שמירת נתוני שחקנים",
+      "dataStorageOptions": {
+        "google_sheets": "גוגל שיטס",
+        "firebase": "Firebase (מסד נתונים)",
+        "none": "לא נדרש",
+        "other": "אחר"
+      },
+      "dataToSave": "מה לשמור? (ניתן לבחור כמה)",
+      "dataToSaveList": {
+        "name": "שם המשתתף",
+        "score": "ניקוד",
+        "time": "זמן תשובה",
+        "detailed_answers": "תשובות מפורטות",
+        "none": "לא לשמור כלום"
+      },
+      "accessControl": "שליטת גישה",
+      "accessControlOptions": {
+        "open": "פתוח לכולם",
+        "password": "סיסמה",
+        "registration": "הרשמה מראש",
+        "unique_links": "קישורים ייחודיים לכל משתתף"
+      }
+    },
+    "modifications": {
+      "title": "שינויים בתבנית קיימת",
+      "subtitle": "האם מתחילים מתבנית של המפצחות?",
+      "startingFrom": "נקודת התחלה",
+      "startingFromOptions": {
+        "template": "מתבנית קיימת של המפצחות",
+        "scratch": "בנייה מאפס"
+      },
+      "templateName": "שם התבנית / הפרויקט הקרוב ביותר",
+      "templateNamePlaceholder": "לדוגמה: חידון בר מצווה, משחק הצמתים",
+      "requiredChanges": "שינויים נדרשים מעבר לעיצוב",
+      "requiredChangesPlaceholder": "תארו אילו פיצ'רים חדשים או שינויים מהותיים נדרשים...",
+      "specialFeatures": "פיצ'רים מיוחדים שאינם בתבנית הסטנדרטית",
+      "specialFeaturesPlaceholder": "מכניקה ייחודית, חוקים מיוחדים, זרימת משחק שונה..."
+    },
+    "deliverables": {
+      "title": "תוצרים ותמיכה",
+      "subtitle": "מה תקבלו ואיזה תמיכה נדרשת?",
+      "deliverableFormats": "פורמטים נדרשים (ניתן לבחור כמה)",
+      "deliverableFormatsList": {
+        "online_link": "קישור אונליין",
+        "downloadable": "קובץ להורדה",
+        "embed_code": "קוד להטמעה באתר",
+        "mobile_app": "אפליקציה לנייד"
+      },
+      "needsPreviewDemo": "האם נדרשת תצוגה מקדימה לפני הגרסה הסופית?",
+      "needsDocumentation": "האם נדרש מדריך למשתמש?",
+      "eventDaySupport": "האם נדרשת תמיכה טכנית ביום האירוע?",
+      "correctionRounds": "כמה סיבובי תיקונים נדרשים?",
+      "correctionRoundsOptions": {
+        "1": "1 סיבוב",
+        "2": "2 סיבובים",
+        "3": "3 סיבובים",
+        "unlimited": "ללא הגבלה (לפי הצורך)"
+      },
+      "postLaunchSupport": "תמיכה לאחר ההשקה",
+      "postLaunchSupportOptions": {
+        "none": "לא נדרש",
+        "1_month": "חודש אחד",
+        "3_months": "3 חודשים",
+        "ongoing": "שוטף"
+      }
+    },
+    "contact": {
+      "title": "פרטי קשר והערות",
+      "subtitle": "כמה מילים אחרונות ואיך ליצור קשר",
+      "contactName": "שם איש הקשר",
+      "contactNamePlaceholder": "שם מלא",
+      "contactPhone": "טלפון",
+      "contactPhonePlaceholder": "05x-xxxxxxx",
+      "contactEmail": "אימייל",
+      "contactEmailPlaceholder": "your@email.com",
+      "specialRequests": "בקשות מיוחדות / שיקולים נוספים",
+      "specialRequestsPlaceholder": "כל מה שחשוב לכם שנדע...",
+      "likedExamples": "דוגמאות שאהבתם (קישורים / תיאור)",
+      "likedExamplesPlaceholder": "מה עשה רושם טוב?",
+      "dislikedExamples": "דוגמאות שלא אהבתם",
+      "dislikedExamplesPlaceholder": "מה לא מתאים לכם?",
+      "successCriteria": "מה יהיה הצלחה בשבילכם?",
+      "successCriteriaPlaceholder": "מה התוצאה שתשמח אתכם ביותר?"
+    }
+  }
+}
