@@ -38,11 +38,11 @@ export async function submitCourseIntakeForm(data: CourseIntakeFormData): Promis
 
   const payload = { ...data, submittedAt: new Date().toISOString() };
 
-  const res = await fetch(url, {
+  await fetch(url, {
     method: 'POST',
+    mode: 'no-cors',
     headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify(payload),
   });
-
-  if (!res.ok) throw new Error(`Server responded with ${res.status}`);
+  // no-cors returns an opaque response — if fetch didn't throw, the request was sent
 }
