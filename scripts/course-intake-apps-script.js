@@ -10,6 +10,7 @@
 
 var SHEET_NAME = 'אפיון קורסים';
 var DOC_FOLDER_NAME = 'מסמכי אפיון קורסים';
+var FILES_FOLDER_NAME = 'קבצי לקוחות';
 
 function doPost(e) {
   try {
@@ -27,7 +28,7 @@ function doPost(e) {
 }
 
 function appendToSheet(data) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = getOrCreateSpreadsheet();
   var sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_NAME);
@@ -35,40 +36,58 @@ function appendToSheet(data) {
       'תאריך שליחה', 'שם לקוח', 'שם פרויקט', 'איש קשר', 'תאריך יעד', 'תקציב',
       'מטרת הקורס', 'קהל יעד', 'סגנון למידה',
       'לוגו', 'קו עיצובי', 'צבעים', 'השראות', 'פונטים', 'הערות כלליות',
-      'מספר משחקים', 'שמות משחקים'
+      'מספר משחקים', 'שמות משחקים', 'קבצים'
     ]);
   }
   var gameNames = (data.games || []).map(function(g) { return g.tempName; }).join(', ');
+  var fileNames = [];
+  if (data.logoFileData) fileNames.push('לוגו: ' + data.logoFileData.name);
+  (data.generalFilesData || []).forEach(function(f) { fileNames.push(f.name); });
+
   sheet.appendRow([
     data.submittedAt || new Date().toISOString(),
     data.clientName, data.projectName, data.contactPerson, data.deadline, data.budget,
     data.courseGoal, data.targetAudience, data.learningStyle,
-    data.logoStatus, (data.designStyle || []).join(', '), data.preferredColors,
+    data.logoStatus, (data.designStyle || []).join(', '), (data.preferredColors || []).join(', '),
     data.inspirations, data.fonts, data.generalNotes,
-    (data.games || []).length, gameNames
+    (data.games || []).length, gameNames, fileNames.join(', ')
   ]);
 }
 
 function createSpecDoc(data) {
-  var folder = getOrCreateFolder(DOC_FOLDER_NAME);
+  var docFolder = getOrCreateFolder(DOC_FOLDER_NAME);
   var title = 'אפיון – ' + (data.projectName || data.clientName || 'לקוח חדש');
   var doc = DocumentApp.create(title);
 
-  // Move to folder
   var file = DriveApp.getFileById(doc.getId());
-  folder.addFile(file);
+  docFolder.addFile(file);
   DriveApp.getRootFolder().removeFile(file);
+
+  // Save uploaded files to Drive and collect links
+  var clientFolderName = (data.projectName || data.clientName || 'לקוח חדש') + ' – קבצים';
+  var logoLink = null;
+  var generalFileLinks = [];
+
+  if (data.logoFileData || (data.generalFilesData && data.generalFilesData.length)) {
+    var filesRoot = getOrCreateFolder(FILES_FOLDER_NAME);
+    var clientFolder = getOrCreateSubfolder(filesRoot, clientFolderName);
+
+    if (data.logoFileData) {
+      logoLink = saveBase64File(clientFolder, data.logoFileData);
+    }
+    (data.generalFilesData || []).forEach(function(fd) {
+      var link = saveBase64File(clientFolder, fd);
+      if (link) generalFileLinks.push({ name: fd.name, url: link });
+    });
+  }
 
   var body = doc.getBody();
   body.clear();
 
-  // ── Title ──────────────────────────────────────────────────
   var titlePara = body.appendParagraph(title);
   titlePara.setHeading(DocumentApp.ParagraphHeading.TITLE);
+  appendPara(body, 'נוצר: ' + new Date().toLocaleString('he-IL'));
 
-  appendPara(body, 'נוצר: ' + new Date().toLocaleString('he-IL'), 'metadata');
-
-  // ── Section: Client details ────────────────────────────────
   appendHeading(body, '👤 פרטי לקוח');
   appendField(body, 'שם לקוח', data.clientName);
   appendField(body, 'שם פרויקט / קורס', data.projectName);
@@ -76,22 +95,26 @@ function createSpecDoc(data) {
   appendField(body, 'תאריך יעד', data.deadline);
   appendField(body, 'תקציב', data.budget);
 
-  // ── Section: Project goal ─────────────────────────────────
   appendHeading(body, '🎯 מטרת הפרויקט');
   appendField(body, 'מטרת הקורס', data.courseGoal);
   appendField(body, 'קהל יעד', data.targetAudience);
   appendField(body, 'סגנון למידה', data.learningStyle);
 
-  // ── Section: Branding ─────────────────────────────────────
   appendHeading(body, '🎨 מיתוג ועיצוב');
   appendField(body, 'לוגו', data.logoStatus);
+  if (logoLink) appendLink(body, 'קובץ לוגו', data.logoFileData.name, logoLink);
   appendField(body, 'קו עיצובי', (data.designStyle || []).join(', '));
-  appendField(body, 'צבעים מועדפים', data.preferredColors);
+  appendField(body, 'צבעים מועדפים', (data.preferredColors || []).join(', '));
   appendField(body, 'השראות / דוגמאות', data.inspirations);
   appendField(body, 'פונטים', data.fonts);
   appendField(body, 'הערות כלליות', data.generalNotes);
+  if (generalFileLinks.length) {
+    appendSubHeading(body, 'קבצים מצורפים');
+    generalFileLinks.forEach(function(f) {
+      appendLink(body, f.name, f.name, f.url);
+    });
+  }
 
-  // ── Games ─────────────────────────────────────────────────
   var games = data.games || [];
   games.forEach(function(game, idx) {
     var gameNum = idx + 1;
@@ -116,11 +139,9 @@ function createSpecDoc(data) {
     appendField(body, 'פונקציות רצויות', (game.gameFunctions || []).join(', '));
 
     appendSubHeading(body, 'מסכים');
-    var screensList = (game.screens || []).join(' | ');
-    appendField(body, 'מסכים', screensList);
+    appendField(body, 'מסכים', (game.screens || []).join(' | '));
     appendField(body, 'הערות', game.notes);
 
-    // Team section
     body.appendParagraph('');
     var teamHeader = body.appendParagraph('🔧 חלק הצוות – משחק ' + gameNum);
     teamHeader.setHeading(DocumentApp.ParagraphHeading.HEADING3);
@@ -138,7 +159,47 @@ function createSpecDoc(data) {
   return doc.getUrl();
 }
 
+// ── File helpers ──────────────────────────────────────────────────────────────
+
+function saveBase64File(folder, fileData) {
+  try {
+    var parts = fileData.data.split(',');
+    var mimeType = parts[0].split(':')[1].split(';')[0];
+    var bytes = Utilities.base64Decode(parts[1]);
+    var blob = Utilities.newBlob(bytes, mimeType, fileData.name);
+    var saved = folder.createFile(blob);
+    return saved.getUrl();
+  } catch (err) {
+    return null;
+  }
+}
+
+function getOrCreateSubfolder(parent, name) {
+  var folders = parent.getFoldersByName(name);
+  return folders.hasNext() ? folders.next() : parent.createFolder(name);
+}
+
+// ── Doc helpers ───────────────────────────────────────────────────────────────
+
+function appendLink(body, label, linkText, url) {
+  var p = body.appendParagraph('');
+  p.appendText(label + ': ').setBold(true);
+  var anchor = p.appendText(linkText);
+  anchor.setBold(false);
+  // Note: Apps Script doesn't support inline hyperlinks via setText,
+  // so we append the URL in parentheses
+  p.appendText(' (' + url + ')').setBold(false);
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
+
+function getOrCreateSpreadsheet() {
+  var files = DriveApp.searchFiles(
+    'title = "' + SHEET_NAME + '" and mimeType = "application/vnd.google-apps.spreadsheet" and trashed = false'
+  );
+  if (files.hasNext()) return SpreadsheetApp.openById(files.next().getId());
+  return SpreadsheetApp.create(SHEET_NAME);
+}
 
 function getOrCreateFolder(name) {
   var folders = DriveApp.getFoldersByName(name);
@@ -160,7 +221,7 @@ function appendField(body, label, value) {
   if (!value || (Array.isArray(value) && !value.length)) return;
   var p = body.appendParagraph('');
   p.appendText(label + ': ').setBold(true);
-  p.appendText(value || '—').setBold(false);
+  p.appendText(String(value)).setBold(false);
 }
 
 function appendTeamField(body, label) {

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { submitCourseIntakeForm } from '../services/courseIntake.service';
 
@@ -32,6 +32,8 @@ interface FormData {
   logoStatus: string;
   designStyle: string[];
   preferredColors: string[];
+  logoFile: File | null;
+  generalFiles: File[];
   inspirations: string;
   fonts: string;
   generalNotes: string;
@@ -436,6 +438,138 @@ const StepProjectGoal = ({
   </div>
 );
 
+const MAX_FILE_MB = 10;
+
+const formatFileSize = (bytes: number) => {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};
+
+const fileTypeIcon = (name: string) => {
+  const ext = name.split('.').pop()?.toLowerCase();
+  if (['jpg','jpeg','png','gif','webp','svg'].includes(ext ?? '')) return '🖼️';
+  if (['pdf'].includes(ext ?? '')) return '📄';
+  if (['ai','psd','xd','fig'].includes(ext ?? '')) return '🎨';
+  return '📎';
+};
+
+const LogoUpload = ({
+  file,
+  onChange,
+}: {
+  file: File | null;
+  onChange: (f: File | null) => void;
+}) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const preview = file && file.type.startsWith('image/') ? URL.createObjectURL(file) : null;
+
+  return (
+    <div>
+      {file ? (
+        <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-200">
+          {preview ? (
+            <img src={preview} alt="לוגו" className="w-12 h-12 object-contain rounded-lg bg-white border border-gray-100" />
+          ) : (
+            <span className="text-2xl">📄</span>
+          )}
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-gray-800 truncate">{file.name}</p>
+            <p className="text-xs text-gray-400">{formatFileSize(file.size)}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => onChange(null)}
+            className="text-gray-300 hover:text-red-400 transition text-lg leading-none px-1"
+          >
+            ×
+          </button>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          className="w-full border-2 border-dashed border-gray-200 rounded-xl p-5 hover:border-primary/50 hover:bg-primary/5 transition text-center"
+        >
+          <span className="text-2xl block mb-1">🖼️</span>
+          <span className="text-sm text-gray-400">לחצו להעלאת לוגו</span>
+          <span className="text-xs text-gray-300 block mt-0.5">PNG, JPG, SVG, PDF עד {MAX_FILE_MB}MB</span>
+        </button>
+      )}
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*,.pdf,.ai,.eps,.svg"
+        className="hidden"
+        onChange={e => {
+          const f = e.target.files?.[0];
+          if (f && f.size <= MAX_FILE_MB * 1024 * 1024) onChange(f);
+          e.target.value = '';
+        }}
+      />
+    </div>
+  );
+};
+
+const FilesUpload = ({
+  files,
+  onChange,
+}: {
+  files: File[];
+  onChange: (f: File[]) => void;
+}) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const addFiles = (newFiles: File[]) => {
+    const valid = newFiles.filter(f => f.size <= MAX_FILE_MB * 1024 * 1024);
+    onChange([...files, ...valid]);
+  };
+
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={() => inputRef.current?.click()}
+        className="w-full border-2 border-dashed border-gray-200 rounded-xl p-4 hover:border-primary/50 hover:bg-primary/5 transition text-center"
+      >
+        <span className="text-2xl block mb-1">📁</span>
+        <span className="text-sm text-gray-400">לחצו להוספת קבצים</span>
+        <span className="text-xs text-gray-300 block mt-0.5">עיצובים, דוגמאות, השראות – עד {MAX_FILE_MB}MB לקובץ</span>
+      </button>
+      <input
+        ref={inputRef}
+        type="file"
+        multiple
+        className="hidden"
+        onChange={e => {
+          addFiles(Array.from(e.target.files ?? []));
+          e.target.value = '';
+        }}
+      />
+      {files.length > 0 && (
+        <div className="mt-3 space-y-2">
+          {files.map((f, i) => (
+            <div key={i} className="flex items-center gap-2 p-2.5 bg-gray-50 rounded-xl border border-gray-100">
+              <span className="text-lg">{fileTypeIcon(f.name)}</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm text-gray-700 truncate">{f.name}</p>
+                <p className="text-xs text-gray-400">{formatFileSize(f.size)}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => onChange(files.filter((_, j) => j !== i))}
+                className="text-gray-300 hover:text-red-400 transition text-lg leading-none px-1"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const ColorPicker = ({
   colors,
   onChange,
@@ -507,14 +641,18 @@ const ColorPicker = ({
 const StepBranding = ({
   data,
   update,
+  onLogoChange,
+  onFilesChange,
 }: {
   data: FormData;
   update: (k: keyof FormData, v: string | string[]) => void;
+  onLogoChange: (f: File | null) => void;
+  onFilesChange: (f: File[]) => void;
 }) => (
   <div>
     <Field>
       <Label>לוגו</Label>
-      <div className="grid grid-cols-1 gap-2">
+      <div className="grid grid-cols-1 gap-2 mb-3">
         {['יש לוגו קיים', 'צריך לוגו חדש', 'צריך התאמת לוגו לכל משחק', 'לא רלוונטי'].map(opt => (
           <RadioCard
             key={opt}
@@ -524,6 +662,7 @@ const StepBranding = ({
           />
         ))}
       </div>
+      <LogoUpload file={data.logoFile} onChange={onLogoChange} />
     </Field>
     <Field>
       <Label hint="בחרו כל מה שמתאים">קו עיצובי</Label>
@@ -556,6 +695,10 @@ const StepBranding = ({
         onChange={v => update('fonts', v)}
         placeholder="אם יש העדפה..."
       />
+    </Field>
+    <Field>
+      <Label hint="אופציונלי">קבצים כלליים</Label>
+      <FilesUpload files={data.generalFiles} onChange={onFilesChange} />
     </Field>
     <Field>
       <Label hint="אופציונלי">הערות כלליות לפרויקט</Label>
@@ -863,6 +1006,8 @@ export default function CourseIntakeForm() {
     logoStatus: '',
     designStyle: [],
     preferredColors: [],
+    logoFile: null,
+    generalFiles: [],
     inspirations: '',
     fonts: '',
     generalNotes: '',
@@ -883,7 +1028,8 @@ export default function CourseIntakeForm() {
     step.type === 'game-screens' &&
     step.gameIndex === formData.games.length - 1;
 
-  const updateForm = (key: keyof FormData, value: string | string[] | GameData[]) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const updateForm = (key: keyof FormData, value: any) => {
     setFormData(prev => ({ ...prev, [key]: value }));
   };
 
@@ -916,11 +1062,25 @@ export default function CourseIntakeForm() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const toBase64 = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
   const handleSubmit = async () => {
     setSubmitting(true);
     setError(null);
     try {
-      await submitCourseIntakeForm(formData);
+      const logoFileData = formData.logoFile
+        ? { name: formData.logoFile.name, type: formData.logoFile.type, data: await toBase64(formData.logoFile) }
+        : null;
+      const generalFilesData = await Promise.all(
+        formData.generalFiles.map(async f => ({ name: f.name, type: f.type, data: await toBase64(f) }))
+      );
+      await submitCourseIntakeForm({ ...formData, logoFileData, generalFilesData });
       setSubmitted(true);
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
@@ -1007,7 +1167,12 @@ export default function CourseIntakeForm() {
                   <StepProjectGoal data={formData} update={updateForm as (k: keyof FormData, v: string | string[]) => void} />
                 )}
                 {step.type === 'branding' && (
-                  <StepBranding data={formData} update={updateForm as (k: keyof FormData, v: string | string[]) => void} />
+                  <StepBranding
+                    data={formData}
+                    update={updateForm}
+                    onLogoChange={f => updateForm('logoFile', f)}
+                    onFilesChange={f => updateForm('generalFiles', f)}
+                  />
                 )}
                 {step.type === 'game-goal' && step.gameIndex !== undefined && (
                   <StepGameGoal
