@@ -31,7 +31,7 @@ interface FormData {
   learningStyle: string;
   logoStatus: string;
   designStyle: string[];
-  preferredColors: string;
+  preferredColors: string[];
   inspirations: string;
   fonts: string;
   generalNotes: string;
@@ -436,6 +436,74 @@ const StepProjectGoal = ({
   </div>
 );
 
+const ColorPicker = ({
+  colors,
+  onChange,
+}: {
+  colors: string[];
+  onChange: (v: string[]) => void;
+}) => {
+  const MAX = 4;
+  const slots = Array.from({ length: MAX });
+
+  const handleChange = (index: number, value: string) => {
+    const next = [...colors];
+    if (index < next.length) {
+      next[index] = value;
+    } else {
+      next.push(value);
+    }
+    onChange(next);
+  };
+
+  const handleRemove = (index: number) => {
+    onChange(colors.filter((_, i) => i !== index));
+  };
+
+  return (
+    <div className="flex gap-3 flex-wrap">
+      {slots.map((_, i) => {
+        const filled = i < colors.length;
+        const color = colors[i] ?? '#6366f1';
+        return (
+          <div key={i} className="flex flex-col items-center gap-1.5">
+            <label className="relative cursor-pointer group">
+              {filled ? (
+                <span
+                  className="block w-12 h-12 rounded-xl border-2 border-white shadow-md ring-1 ring-gray-200 transition group-hover:scale-105"
+                  style={{ backgroundColor: color }}
+                />
+              ) : (
+                <span className="flex items-center justify-center w-12 h-12 rounded-xl border-2 border-dashed border-gray-300 text-gray-400 hover:border-primary hover:text-primary transition text-xl">
+                  +
+                </span>
+              )}
+              <input
+                type="color"
+                value={filled ? color : '#6366f1'}
+                onChange={e => handleChange(i, e.target.value)}
+                className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+              />
+            </label>
+            {filled && (
+              <div className="flex flex-col items-center gap-0.5">
+                <span className="text-xs text-gray-500 font-mono">{color}</span>
+                <button
+                  type="button"
+                  onClick={() => handleRemove(i)}
+                  className="text-xs text-gray-300 hover:text-red-400 transition leading-none"
+                >
+                  הסר
+                </button>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 const StepBranding = ({
   data,
   update,
@@ -466,11 +534,10 @@ const StepBranding = ({
       />
     </Field>
     <Field>
-      <Label hint="אופציונלי">צבעים מועדפים</Label>
-      <TextInput
-        value={data.preferredColors}
+      <Label hint="עד 4 צבעים, אופציונלי">צבעים מועדפים</Label>
+      <ColorPicker
+        colors={data.preferredColors}
         onChange={v => update('preferredColors', v)}
-        placeholder="לדוגמה: כחול עמוק + זהב, #003366..."
       />
     </Field>
     <Field>
@@ -795,7 +862,7 @@ export default function CourseIntakeForm() {
     learningStyle: '',
     logoStatus: '',
     designStyle: [],
-    preferredColors: '',
+    preferredColors: [],
     inspirations: '',
     fonts: '',
     generalNotes: '',

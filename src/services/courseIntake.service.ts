@@ -25,7 +25,7 @@ export interface CourseIntakeFormData {
   learningStyle: string;
   logoStatus: string;
   designStyle: string[];
-  preferredColors: string;
+  preferredColors: string[];
   inspirations: string;
   fonts: string;
   generalNotes: string;
