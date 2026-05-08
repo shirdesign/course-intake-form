@@ -923,7 +923,8 @@ export default function CourseIntakeForm() {
       await submitCourseIntakeForm(formData);
       setSubmitted(true);
     } catch (e) {
-      setError('אירעה שגיאה בשליחה. אנא נסו שנית.');
+      const msg = e instanceof Error ? e.message : String(e);
+      setError(`שגיאה בשליחה: ${msg}`);
     } finally {
       setSubmitting(false);
     }
