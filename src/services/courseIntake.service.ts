@@ -45,16 +45,24 @@ export interface CourseIntakeFormData {
 
 export async function submitCourseIntakeForm(data: CourseIntakeFormData): Promise<void> {
   const url = import.meta.env.VITE_COURSE_INTAKE_SCRIPT_URL;
+  console.log('[submit] URL:', url ? url.slice(0, 60) + '...' : 'NOT SET');
   if (!url) throw new Error('VITE_COURSE_INTAKE_SCRIPT_URL is not set');
 
   const { logoFile: _lf, generalFiles: _gf, ...rest } = data;
   const payload = { ...rest, submittedAt: new Date().toISOString() };
+  console.log('[submit] payload size:', JSON.stringify(payload).length, 'bytes');
+  console.log('[submit] games count:', payload.games?.length);
 
-  await fetch(url, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify(payload),
-  });
-  // no-cors returns an opaque response — if fetch didn't throw, the request was sent
+  try {
+    await fetch(url, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload),
+    });
+    console.log('[submit] fetch completed (no-cors — response is opaque)');
+  } catch (err) {
+    console.error('[submit] fetch error:', err);
+    throw err;
+  }
 }
